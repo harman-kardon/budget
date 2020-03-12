@@ -21,7 +21,7 @@ var budgetController = (function() {
 
     Expense.prototype.getPercentage = function() {
         return this.percentage; 
-    }
+    };
 
 
     // income function constructor
@@ -286,7 +286,7 @@ var UIController = (function(){
             });
 
         },        
-        displayMonth: function() {
+        displayDate: function() {
             var now, year, month, months; 
 
             now = new Date();
@@ -433,7 +433,7 @@ var controller = (function(budgetCtrl, UICtrl) {
     return {
         init: function() {
             console.log('Application has started...');
-            UICtrl.displayMonth();
+            UICtrl.displayDate();
             UICtrl.displayBudget({
                 budget: 0,
                 totalInc: 0,
