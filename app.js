@@ -202,6 +202,14 @@ var UIController = (function(){
     };
 
 
+    // define custom "for each" function 
+    var nodeListForEach = function(nodeList, callback) {
+        for (var i = 0; i < nodeList.length; i++) {
+            callback(nodeList[i], i);
+        }
+    };
+
+
     return {
         getInput: function() {
             return {
@@ -268,13 +276,6 @@ var UIController = (function(){
             
             var fields = document.querySelectorAll(DOMStrings.expensesPercentageLabel);
 
-            // define custom "for each" function 
-            var nodeListForEach = function(nodeList, callback) {
-                for (var i = 0; i < nodeList.length; i++) {
-                    callback(nodeList[i], i);
-                }
-            };
-
             nodeListForEach(fields, function(current, index) {
 
                 if (percentages[index] > 0) {
@@ -295,6 +296,21 @@ var UIController = (function(){
             year = now.getFullYear();
 
             document.querySelector(DOMStrings.dateLabel).textContent = months[month] + ' ' + year;
+
+        },
+        changedType: function() {
+
+            var fields = document.querySelectorAll(
+                DOMStrings.inputType + ',' + 
+                DOMStrings.inputDescription + ',' + 
+                DOMStrings.inputValue 
+            );
+
+            nodeListForEach(fields, function(cur) {
+                cur.classList.toggle('red-focus');
+            });
+
+            document.querySelector(DOMStrings.inputBtn).classList.toggle('red');
 
         },
         getDOMStrings: function() {
@@ -328,6 +344,7 @@ var controller = (function(budgetCtrl, UICtrl) {
         // listen to click on delete buttons - event delegation
         document.querySelector(DOM.container).addEventListener('click', ctrlDeleteItem);
 
+        document.querySelector(DOM.inputType).addEventListener('change', UICtrl.changedType);
     };
 
 
