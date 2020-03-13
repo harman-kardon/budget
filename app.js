@@ -144,6 +144,18 @@ var budgetController = (function() {
             };
 
         },
+        storeBudget: function() {
+            localStorage.setItem('data', JSON.stringify(data));
+        },
+        getStoredBudget: function() {
+            var localData = JSON.parse(localStorage.getItem('data'));
+            return localData;
+        },        
+        updateData: function(StoredData) {
+            data.totals = StoredData.totals;
+            data.budget = StoredData.budget;
+            data.percentage = StoredData.percentage;            
+        },
         testing: function() {
             console.log(data);
         }
@@ -322,6 +334,8 @@ var UIController = (function(){
 
 
 
+
+
 //////////////////////////////////////////////////////////////////////////////////////////
 // GLOBAL APP CONTROLLER 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -375,6 +389,34 @@ var controller = (function(budgetCtrl, UICtrl) {
     };
 
 
+    var loadData = function() {
+        var localData, incItem, expItem, budget; 
+
+        // 1 - get data from localStorage
+        localData = budgetCtrl.getStoredBudget();
+
+        if(localStorage) {
+            // 2 - update data structure with info from localstorage
+            budgetCtrl.updateData(localData);
+    
+            // 3 - List incomes and expenses
+            localData.allItems.inc.forEach(el => {
+                incItem = budgetCtrl.addItem('inc', el.description, el.value);
+                UICtrl.addListItem(incItem, 'inc');
+            });
+            
+            localData.allItems.exp.forEach(el => {
+                expItem = budgetCtrl.addItem('exp', el.description, el.value);
+                UICtrl.addListItem(expItem, 'exp');
+            });
+    
+            // 4 - display data in UI
+            budget = budgetCtrl.getBudget();
+            UICtrl.displayBudget(budget);
+        }
+    };
+
+
     var ctrlAddItem = function() {
         var input, newItem;
 
@@ -396,6 +438,10 @@ var controller = (function(budgetCtrl, UICtrl) {
 
             // 6 - calculate and update %
             updatePercentages();
+
+            // 7 - store data in localstorage
+            budgetCtrl.storeBudget();
+
         }
 
     };
@@ -425,6 +471,8 @@ var controller = (function(budgetCtrl, UICtrl) {
              // 4 - calculate and update %
              updatePercentages();
 
+             // 5 - update data in localstorage
+            budgetCtrl.storeBudget();
         }
         
     };
@@ -441,6 +489,7 @@ var controller = (function(budgetCtrl, UICtrl) {
                 percentage: -1
             });
             setupEventListeners();
+            loadData();
         }
     };
 
